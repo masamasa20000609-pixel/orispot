@@ -895,11 +895,34 @@ function loadCsvSamp(){procCT(`会社名,キーマン氏名,キーマン役職,�
 function procCT(text){const lines=text.trim().split(/\r?\n/).filter(l=>l.trim());if(lines.length<2){alert('データが見つかりません');return;}const pr=l=>{const row=[];let cur='',inQ=false;for(let i=0;i<l.length;i++){if(l[i]==='"')inQ=!inQ;else if(l[i]===','&&!inQ){row.push(cur.trim());cur='';}else cur+=l[i];}row.push(cur.trim());return row;};const headers=pr(lines[0]);const rows=lines.slice(1).filter(l=>l.trim()).map(l=>{const r=pr(l);return Object.fromEntries(headers.map((h,i)=>[h,r[i]||'']));});impHeaders=headers;impRows=rows;document.getElementById('sheet-btns').innerHTML='<span style="font-size:12px;color:#9C907E;">CSVファイル</span>';document.getElementById('imp-prev-t').textContent='プレビュー（先頭3件）';const tbl=document.getElementById('imp-prev-tbl');tbl.innerHTML=`<thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>`+rows.slice(0,3).map(r=>`<tr>${headers.map(h=>`<td>${r[h]||''}</td>`).join('')}</tr>`).join('')+'</tbody>';impS(2);}
 function goToMap(){const opts='<option value="">— スキップ —</option>'+impHeaders.map(h=>`<option value="${h}">${h}</option>`).join('');document.getElementById('map-rows').innerHTML=MAP_FIELDS.map(f=>`<div class="map-row"><div class="map-label">${f.label}${f.required?'<span style="color:#A32D2D;"> *</span>':''}</div><select class="map-sel" id="mp-${f.key}">${opts}</select></div>`).join('');MAP_FIELDS.forEach(f=>{const a=impHeaders.find(h=>h===f.label||h.toLowerCase()===f.key.toLowerCase()||h.includes(f.label));if(a)document.getElementById('mp-'+f.key).value=a;});impS(3);}
 async function doImport(){const mp={};MAP_FIELDS.forEach(f=>{const v=document.getElementById('mp-'+f.key).value;if(v)mp[f.key]=v;});if(!mp.name){alert('「会社名」の列は必須です');return;}let added=0,skipped=0;const newCos=[];impRows.forEach(row=>{const get=k=>mp[k]?String(row[mp[k]]||'').trim():'';const name=get('name');if(!name){skipped++;return;}const nid=companies.length>0?Math.max(...companies.map(c=>c.id))+1+added:added;const st=STATUSES.includes(get('status'))?get('status'):'未対応';const newC={id:nid,name,pref:get('pref')||'',industry:get('industry')||'',empRange:get('empRange')||'',phone:get('phone'),status:st,nextDate:get('nextDate'),ceo:get('ceo')||'',addr:get('addr')||'',empCount:get('empCount')||'',rev:get('rev')||'',cap:get('cap')||'',keymanId:0,memo:''};companies.push(newC);newCos.push(newC);const kn=get('keymanName'),kt=get('keymanTitle');persons[nid]=kn?[{id:0,name:kn,title:kt||'',phone:'',email:'',note:''}]:[];callLogs[nid]=[];added++;});
-// Supabaseに一括保存
-showLoading('Supabaseに保存中... ('+added+'件)');
-for(const c of newCos){
-  await saveCompanyToDB(c);
-  if(persons[c.id]&&persons[c.id].length>0) await savePersonsToDB(c.id);
+// Supabaseにバッチ保存（100件ずつ）
+showLoading('Supabaseに保存中... (0/'+added+'件)');
+const BATCH=100;
+for(let i=0;i<newCos.length;i+=BATCH){
+  const batch=newCos.slice(i,i+BATCH);
+  // 会社を一括挿入
+  const coRows=batch.map(c=>localCoToDb(c));
+  const res=await sbInsert('companies',coRows);
+  if(res){
+    res.forEach((row,j)=>{
+      const c=batch[j];
+      const uuid=row.id;
+      idMap[c.id]=uuid;
+      uuidMap[uuid]=c.id;
+      c._uuid=uuid;
+    });
+    // キーマンがいる会社のpersonsを一括挿入
+    const personRows=[];
+    batch.forEach(c=>{
+      const ps=persons[c.id]||[];
+      ps.forEach((p,idx)=>{
+        if(c._uuid) personRows.push({company_id:c._uuid,person_index:idx,name:p.name||'',title:p.title||'',phone:p.phone||'',email:p.email||'',note:p.note||''});
+      });
+    });
+    if(personRows.length>0) await sbInsert('persons',personRows);
+  }
+  const done=Math.min(i+BATCH,added);
+  showLoading('Supabaseに保存中... ('+done+'/'+added+'件)');
 }
 hideLoading();
 document.getElementById('imp-done-msg').textContent=`${added}件を取り込みました`;document.getElementById('imp-done-sub').textContent=(skipped?`${skipped}件スキップ`:'')+(impMode==='xl'?` （シート: ${impSheet}）`:'');impS(4);applyF();updBadges();updPhCnts();}
