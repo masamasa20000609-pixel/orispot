@@ -453,6 +453,7 @@ async function sbFetch(path, options={}){
       'Authorization': 'Bearer '+SB_KEY,
       'Content-Type': 'application/json',
       'Prefer': options.prefer||'return=representation',
+      'Range': '0-9999',
       ...options.headers
     },
     ...options
@@ -541,9 +542,50 @@ function localCoToDb(c){
 }
 
 // 全データ読み込み
+
+// ===== 担当者管理 DB連携 =====
+async function loadUsersFromDB(){
+  const rows = await sbSelect('users','order=sort_order.asc');
+  if(!rows||rows.length===0) return false;
+  isUsers = rows.map(r=>({
+    id: r.id,
+    name: r.name||'',
+    role: r.role||'IS担当',
+    color: r.color||'#E07A3A'
+  }));
+  nextUid = Math.max(...isUsers.map(u=>u.id)) + 1;
+  return true;
+}
+
+async function saveUsersToDB(){
+  // 全削除→再挿入
+  await sbFetch('users', {method:'DELETE', prefer:'return=minimal', headers:{'id':'gte.0'}});
+  if(isUsers.length===0) return;
+  const rows = isUsers.map((u,i)=>({
+    id: u.id,
+    name: u.name,
+    role: u.role,
+    color: u.color,
+    sort_order: i
+  }));
+  await sbInsert('users', rows);
+}
+
+async function addUserToDB(u){
+  const res = await sbInsert('users',[{name:u.name,role:u.role,color:u.color,sort_order:isUsers.length}]);
+  if(res&&res[0]) return res[0].id;
+  return u.id;
+}
+
+async function deleteUserFromDB(id){
+  await sbDelete('users', id);
+}
+
 async function loadFromDB(){
   showLoading('データを読み込み中...');
   try{
+    // 担当者を先に読み込む
+    const usersLoaded = await loadUsersFromDB();
     const [cos, pers, logs] = await Promise.all([
       sbSelect('companies','order=created_at.asc'),
       sbSelect('persons','order=person_index.asc'),
@@ -580,13 +622,18 @@ async function loadFromDB(){
     (logs||[]).forEach(row=>{
       const lid=uuidMap[row.company_id];
       if(lid===undefined)return;
+      // user_idがあればそのまま使用、なければuser_nameで検索
+      let userId = row.user_id;
+      if(!userId && row.user_name){
+        const u = isUsers.find(u=>u.name===row.user_name);
+        userId = u ? u.id : (isUsers[0]?.id||1);
+      }
+      if(!userId) userId = isUsers[0]?.id||1;
       callLogs[lid].push({
         result: row.result,
         memo: row.memo||'',
         time: row.time||'',
-        userId: 1,
-        _userName: row.user_name||'',
-        _userColor: row.user_color||'#E07A3A',
+        userId: userId,
         dateStr: row.date_str||''
       });
     });
@@ -658,6 +705,7 @@ async function saveLogToDB(cid, log){
     time:log.time||'',
     user_name:u.name,
     user_color:u.color,
+    user_id:u.id,
     date_str:log.dateStr||''
   });
 }
@@ -700,8 +748,12 @@ function onUC(){curUid=parseInt(document.getElementById('user-sel').value);updat
 function openUM(){renderUM();document.getElementById('um-mo').classList.add('open');}
 function renderUM(){document.getElementById('um-list').innerHTML=isUsers.map(u=>`<div class="ui"><div class="uav" style="background:${u.color};">${u.name.slice(0,1)}</div><div><div class="un">${u.name}</div><div class="ur">${u.role}</div></div>${isUsers.length>1?`<button class="ud" onclick="delUser(${u.id})">削除</button>`:''}</div>`).join('');document.getElementById('avc').innerHTML=AVC_COLS.map(c=>`<div class="${c===selAvC?'as':''}" style="background:${c};border:2px solid ${c===selAvC?'#2C2820':'transparent'};" onclick="selAV('${c}',this)"></div>`).join('');}
 function selAV(c,el){selAvC=c;document.querySelectorAll('#avc div').forEach(x=>x.style.borderColor='transparent');el.style.borderColor='#2C2820';}
-function addUser(){const n=(document.getElementById('nu-n').value||'').trim();if(!n)return;const r=(document.getElementById('nu-r').value||'IS担当').trim();isUsers.push({id:nextUid++,name:n,role:r,color:selAvC});document.getElementById('nu-n').value='';document.getElementById('nu-r').value='';renderUM();renderUS();}
-function delUser(id){if(isUsers.length<=1)return;isUsers=isUsers.filter(u=>u.id!==id);if(curUid===id)curUid=isUsers[0].id;renderUM();renderUS();updateKPI();}
+async function addUser(){const n=(document.getElementById('nu-n').value||'').trim();if(!n)return;const r=(document.getElementById('nu-r').value||'IS担当').trim();const tmpId=nextUid++;const u={id:tmpId,name:n,role:r,color:selAvC};isUsers.push(u);document.getElementById('nu-n').value='';document.getElementById('nu-r').value='';renderUM();renderUS();
+  // DBに保存して正式IDを取得
+  const res=await sbInsert('users',[{name:n,role:r,color:selAvC,sort_order:isUsers.length-1}]);
+  if(res&&res[0]){u.id=res[0].id;nextUid=Math.max(nextUid,u.id+1);}
+}
+function delUser(id){if(isUsers.length<=1)return;deleteUserFromDB(id);isUsers=isUsers.filter(u=>u.id!==id);if(curUid===id)curUid=isUsers[0].id;renderUM();renderUS();updateKPI();}
 let setDS=-1;
 function openSettings(){document.getElementById('clist').innerHTML=colCfg.map((c,i)=>`<div class="citem" draggable="true" ondragstart="sDS(event,${i})" ondragover="sDO(event,${i})" ondrop="sDP(event,${i})" ondragend="sDE()" ondragleave="sDL(${i})"><span class="cdrg">⠿</span><input type="checkbox" class="cchk" id="cc${i}" ${c.visible?'checked':''} ${c.required?'disabled':''}><label class="clbl" for="cc${i}">${c.label}${c.required?' (固定)':''}</label></div>`).join('');document.getElementById('set-mo').classList.add('open');}
 function sDS(e,i){setDS=i;e.currentTarget.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
