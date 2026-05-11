@@ -337,6 +337,38 @@ input.pfi:focus{outline:none;border-color:var(--om);}
 .rval{font-size:11px;color:#2C2820;font-weight:600;min-width:26px;text-align:right;}
 .save-flash{position:fixed;top:56px;right:16px;background:#3B6D11;color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;z-index:300;box-shadow:0 4px 12px rgba(0,0,0,0.2);animation:fadeIn 0.2s;pointer-events:none;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.log-edit-btn{padding:2px 7px;border-radius:4px;border:0.5px solid #C8BFAA;background:#fff;color:#9C907E;font-size:10px;cursor:pointer;flex-shrink:0;}
+.log-edit-btn:hover{border-color:var(--om);color:var(--od);background:var(--ol);}
+.log-del-btn{padding:2px 7px;border-radius:4px;border:0.5px solid #FECACA;background:#FEF2F2;color:#A32D2D;font-size:10px;cursor:pointer;flex-shrink:0;}
+.log-del-btn:hover{background:#A32D2D;color:#fff;}
+.log-edit-form{width:100%;margin-top:6px;display:flex;flex-direction:column;gap:5px;}
+.log-edit-sel{padding:4px 7px;border-radius:5px;border:1.5px solid var(--om);background:#fff;color:#2C2820;font-size:12px;cursor:pointer;}
+.log-edit-inp{padding:4px 8px;border-radius:5px;border:1.5px solid #C8BFAA;background:#fff;color:#2C2820;font-size:12px;}
+.log-edit-inp:focus{outline:none;border-color:var(--om);}
+.log-edit-acts{display:flex;gap:5px;}
+.log-edit-save{padding:4px 12px;border-radius:5px;background:var(--om);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;}
+.log-edit-cancel{padding:4px 9px;border-radius:5px;border:0.5px solid #C8BFAA;background:#fff;color:#6B6058;font-size:12px;cursor:pointer;}
+
+.preset-bar{display:flex;align-items:center;gap:5px;padding:4px 12px;background:#F0ECE0;border-bottom:0.5px solid #C8BFAA;flex-shrink:0;overflow-x:auto;min-height:32px;}
+.preset-bar::-webkit-scrollbar{height:2px;}
+.preset-lbl{font-size:10px;color:#9C907E;white-space:nowrap;flex-shrink:0;}
+.preset-btn{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:14px;border:1px solid #C8BFAA;background:#fff;color:#6B6058;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.preset-btn:hover{border-color:var(--om);color:var(--od);background:var(--ol);}
+.preset-btn.active{background:var(--om);color:#fff;border-color:var(--om);}
+.preset-save-btn{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:14px;border:1px dashed #C8BFAA;background:transparent;color:#9C907E;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.preset-save-btn:hover{border-color:var(--om);color:var(--om);background:var(--ol);}
+.preset-mo{width:360px;}
+.preset-list{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;max-height:200px;overflow-y:auto;}
+.preset-item{display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:7px;border:1px solid #E0D9C8;background:#FAF8F3;}
+.preset-name{flex:1;font-size:12px;font-weight:500;color:#2C2820;}
+.preset-desc{font-size:10px;color:#9C907E;margin-top:1px;}
+.preset-edit-btn{padding:2px 7px;border-radius:4px;border:0.5px solid #C8BFAA;background:#fff;color:#9C907E;font-size:10px;cursor:pointer;}
+.preset-edit-btn:hover{border-color:var(--om);color:var(--od);}
+.preset-del-btn{padding:2px 7px;border-radius:4px;border:0.5px solid #FECACA;background:#FEF2F2;color:#A32D2D;font-size:10px;cursor:pointer;}
+.preset-del-btn:hover{background:#A32D2D;color:#fff;}
+.preset-inp{width:100%;padding:7px 10px;border-radius:6px;border:1.5px solid #C8BFAA;background:#fff;color:#2C2820;font-size:13px;margin-bottom:6px;}
+.preset-inp:focus{outline:none;border-color:var(--om);}
+.preset-current{background:#FFF8F0;border:1px solid #F5E6D8;border-radius:6px;padding:6px 10px;margin-bottom:10px;font-size:11px;color:#6B6058;}
 .new-co-m{width:520px;}
 .new-co-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .new-co-field{display:flex;flex-direction:column;gap:3px;}
@@ -373,7 +405,8 @@ input.pfi:focus{outline:none;border-color:var(--om);}
       <div class="content">
         <div class="lp" id="list-panel">
           <div class="lhdr"><div class="sw"><input class="sbox" type="text" placeholder="会社名・キーマン・役職..." id="sin" oninput="onSI()" onkeydown="onSK(event)" onblur="hideSug()" autocomplete="off"><div class="sdrop" id="sdrop"></div></div><button class="hbtn" style="background:var(--om);color:#fff;border-color:var(--om);font-weight:600;" onclick="openNewCo()">＋ 新規追加</button><button class="hbtn-xl" onclick="openImp('xl')">📗 Excel</button><button class="hbtn" onclick="openImp('csv')">📄 CSV</button><div class="cnt" id="cnt">0 件</div></div>
-          <div class="sort-bar"><span class="sort-lbl">並び順：</span><button class="sc active" id="sc-phone-first" onclick="setSM('phone-first')">📞 番号あり優先</button><button class="sc" id="sc-phone-none" onclick="setSM('phone-none')">❌ 番号なし優先</button><button class="sc" id="sc-default" onclick="setSM('default')">デフォルト</button><div class="sort-sep"></div><button class="sc" id="sc-status" onclick="setSM('status')">ステータス順</button><button class="sc" id="sc-date" onclick="setSM('date')">次回日時順</button></div>
+          <div class="sort-bar"><span class="sort-lbl">並び順：</span><button class="sc active" id="sc-phone-first" onclick="setSM('phone-first')">📞 番号あり優先</button><button class="sc" id="sc-phone-none" onclick="setSM('phone-none')">❌ 番号なし優先</button><button class="sc" id="sc-default" onclick="setSM('default')">デフォルト</button><div class="sort-sep"></div><button class="sc" id="sc-status" onclick="setSM('status')">ステータス順</button><button class="sc" id="sc-date" onclick="setSM('date')">次回日時順</button><button class="sc" id="sc-pref" onclick="setSM('pref')">都道府県順</button><button class="sc" id="sc-name" onclick="setSM('name')">会社名順</button></div>
+          <div class="preset-bar" id="preset-bar"></div>
           <div class="ftb" id="ftb"></div>
           <div class="lt"><table><thead id="lhd"></thead><tbody id="lbody"></tbody></table></div>
           <div class="pgr"><button onclick="chgPg(-1)">← 前へ</button><div class="pi2" id="pinfo"></div><button onclick="chgPg(1)">次へ →</button></div>
@@ -405,6 +438,21 @@ input.pfi:focus{outline:none;border-color:var(--om);}
 <div class="mo" id="km-mo"><div class="mbox" style="width:270px;"><div class="mt">キーマン変更</div><div class="ms">担当者を選択</div><div id="kml2" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;max-height:160px;overflow-y:auto;"></div><div class="mact"><button class="mcan" onclick="document.getElementById('km-mo').classList.remove('open')">キャンセル</button></div></div></div>
 <div class="mo" id="set-mo"><div class="mbox set-m"><div class="mt">⚙ 設定</div><div class="ms">表示列をドラッグで並び替え・チェックで表示切替</div><div class="clist" id="clist"></div><div class="mact" style="margin-top:12px;"><button class="mcan" onclick="closeSet()">閉じる</button><button class="msav" onclick="applySet()">適用する</button></div></div></div>
 
+<div class="mo" id="preset-mo" onclick="if(event.target===this)closePresetMo()">
+  <div class="mbox preset-mo">
+    <div class="mt">📌 フィルタープリセット</div>
+    <div class="ms">よく使うフィルターを保存して素早く呼び出せます</div>
+    <div id="preset-list-wrap"></div>
+    <hr style="border:none;border-top:1px solid #E0D9C8;margin:8px 0;">
+    <div style="font-size:11px;font-weight:600;color:#6B6058;margin-bottom:5px;">現在のフィルターを保存</div>
+    <div class="preset-current" id="preset-current-desc">フィルターなし</div>
+    <input class="preset-inp" id="preset-name-inp" type="text" placeholder="プリセット名（例：東京・未対応）">
+    <div class="mact">
+      <button class="mcan" onclick="closePresetMo()">閉じる</button>
+      <button class="msav" onclick="savePreset()">保存する</button>
+    </div>
+  </div>
+</div>
 <div class="mo" id="new-co-mo" onclick="ncOut(event)">
   <div class="mbox new-co-m">
     <div class="mt">🏢 新規会社を追加</div>
@@ -654,6 +702,7 @@ async function loadFromDB(){
       }
       if(!userId) userId = isUsers[0]?.id||1;
       callLogs[lid].push({
+        _uuid: row.id,
         result: row.result,
         memo: row.memo||'',
         time: row.time||'',
@@ -722,7 +771,7 @@ async function saveLogToDB(cid, log){
   const c=companies.find(x=>x.id===cid);
   if(!c||!c._uuid)return;
   const u=curUser();
-  await sbInsert('call_logs',{
+  const res=await sbInsert('call_logs',{
     company_id:c._uuid,
     result:log.result,
     memo:log.memo||'',
@@ -732,6 +781,17 @@ async function saveLogToDB(cid, log){
     user_id:u.id,
     date_str:log.dateStr||''
   });
+  if(res&&res[0]) log._uuid=res[0].id;
+}
+
+async function deleteLogFromDB(uuid){
+  if(!uuid)return;
+  await sbFetch('call_logs?id=eq.'+uuid,{method:'DELETE',prefer:'return=minimal'});
+}
+
+async function updateLogInDB(log){
+  if(!log._uuid)return;
+  await sbFetch('call_logs?id=eq.'+log._uuid,{method:'PATCH',body:JSON.stringify({result:log.result,memo:log.memo||''}),prefer:'return=minimal'});
 }
 
 const RESULTS=['未接続','受付NG','担当不在','再コール','アポ獲得','NG'];
@@ -759,11 +819,48 @@ let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let isEditMode=false,editSnapshot=null,memoTimer=null;
 let impMode='xl',impWB=null,impSheet=null,impHeaders=[],impRows=[];
 let phoneFilter='all',sortMode='phone-first';
+let colSortKey=null,colSortDir='asc'; // 列クリックソート
 function hasPhone(c){const p=(c.phone||'').trim();return !!(p&&p!=='—'&&p!=='-'&&p!=='ー'&&p!=='－'&&!/^[-ー－\s]*$/.test(p));}
 function kmCount(cid){return(persons[cid]||[]).length;}
 function curUser(){return isUsers.find(u=>u.id===curUid)||isUsers[0];}
-function setSM(mode){sortMode=mode;document.querySelectorAll('.sc').forEach(b=>b.classList.remove('active'));const el=document.getElementById('sc-'+mode);if(el)el.classList.add('active');applyF();}
-function doSortArr(arr){const a=[...arr];if(sortMode==='phone-first')a.sort((a,b)=>(hasPhone(a)?0:1)-(hasPhone(b)?0:1));else if(sortMode==='phone-none')a.sort((a,b)=>(hasPhone(a)?1:0)-(hasPhone(b)?1:0));else if(sortMode==='status')a.sort((a,b)=>(STATUS_ORD[a.status]??9)-(STATUS_ORD[b.status]??9));else if(sortMode==='date')a.sort((a,b)=>{if(!a.nextDate&&!b.nextDate)return 0;if(!a.nextDate)return 1;if(!b.nextDate)return-1;return a.nextDate.localeCompare(b.nextDate);});return a;}
+function setSM(mode){sortMode=mode;colSortKey=null;colSortDir='asc';document.querySelectorAll('.sc').forEach(b=>b.classList.remove('active'));const el=document.getElementById('sc-'+mode);if(el)el.classList.add('active');renderHead();applyF();}
+function doSortArr(arr){
+  const a=[...arr];
+  // 列クリックソートが優先
+  if(colSortKey){
+    a.sort((x,y)=>{
+      let xv='',yv='';
+      if(colSortKey==='name')      {xv=x.name||''; yv=y.name||'';}
+      else if(colSortKey==='pref') {xv=ALL_PREFS.indexOf(x.pref); yv=ALL_PREFS.indexOf(y.pref); if(xv<0)xv=999; if(yv<0)yv=999; return colSortDir==='asc'?xv-yv:yv-xv;}
+      else if(colSortKey==='status'){xv=STATUS_ORD[x.status]??9; yv=STATUS_ORD[y.status]??9; return colSortDir==='asc'?xv-yv:yv-xv;}
+      else if(colSortKey==='nextDate'){xv=x.nextDate||''; yv=y.nextDate||'';}
+      else if(colSortKey==='phone'){xv=x.phone||''; yv=y.phone||'';}
+      else if(colSortKey==='kmCount'){xv=kmCount(x.id); yv=kmCount(y.id); return colSortDir==='asc'?xv-yv:yv-xv;}
+      else {xv=String(x[colSortKey]||''); yv=String(y[colSortKey]||'');}
+      const cmp=xv.localeCompare(yv,'ja');
+      return colSortDir==='asc'?cmp:-cmp;
+    });
+    return a;
+  }
+  // ソートバーの並び順
+  if(sortMode==='phone-first')a.sort((a,b)=>(hasPhone(a)?0:1)-(hasPhone(b)?0:1));
+  else if(sortMode==='phone-none')a.sort((a,b)=>(hasPhone(a)?1:0)-(hasPhone(b)?1:0));
+  else if(sortMode==='status')a.sort((a,b)=>(STATUS_ORD[a.status]??9)-(STATUS_ORD[b.status]??9));
+  else if(sortMode==='date')a.sort((a,b)=>{if(!a.nextDate&&!b.nextDate)return 0;if(!a.nextDate)return 1;if(!b.nextDate)return-1;return a.nextDate.localeCompare(b.nextDate);});
+  else if(sortMode==='pref')a.sort((a,b)=>{const pi=ALL_PREFS.indexOf(a.pref),qi=ALL_PREFS.indexOf(b.pref);return(pi<0?999:pi)-(qi<0?999:qi);});
+  else if(sortMode==='name')a.sort((a,b)=>(a.name||'').localeCompare(b.name||'','ja'));
+  return a;
+}
+
+function toggleColSort(key){
+  if(colSortKey===key){
+    if(colSortDir==='asc') colSortDir='desc';
+    else { colSortKey=null; colSortDir='asc'; } // 3回目でリセット
+  } else {
+    colSortKey=key; colSortDir='asc';
+  }
+  renderHead(); applyF();
+}
 function setPF(mode,el){phoneFilter=mode;document.querySelectorAll('.ph-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');applyF();}
 function updPhCnts(){const tot=companies.length,has=companies.filter(hasPhone).length;document.getElementById('ph-all').textContent=tot;document.getElementById('ph-has').textContent=has;document.getElementById('ph-none').textContent=tot-has;}
 function swPage(p,el){document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p==='analytics')renderAnalytics();}
@@ -830,11 +927,150 @@ function saveNewCo(){
   });
   setTimeout(()=>{const c=filtered.find(x=>x.id===nid);if(c)selCo(nid);},100);
 }
+// ===== フィルタープリセット =====
+let filterPresets = []; // [{id, name, filters, sortMode, phoneFilter}]
+let activePresetId = null;
+
+async function loadPresetsFromDB(){
+  const row = await sbSelect('app_settings', 'key=eq.filter_presets');
+  if(row && row[0] && row[0].value){
+    try{ filterPresets = JSON.parse(row[0].value); }catch(e){ filterPresets=[]; }
+  }
+  renderPresetBar();
+}
+
+async function savePresetsToDB(){
+  const val = JSON.stringify(filterPresets);
+  // upsert
+  await sbFetch('app_settings', {
+    method:'POST',
+    body: JSON.stringify({key:'filter_presets', value:val}),
+    prefer:'resolution=merge-duplicates,return=minimal'
+  });
+}
+
+function renderPresetBar(){
+  const bar = document.getElementById('preset-bar');
+  if(!bar) return;
+  let h = '<span class="preset-lbl">📌</span>';
+  filterPresets.forEach(p=>{
+    h += `<button class="preset-btn${activePresetId===p.id?' active':''}" onclick="applyPreset('${p.id}')">${p.name}</button>`;
+  });
+  h += `<button class="preset-save-btn" onclick="openPresetMo()">＋ 保存</button>`;
+  bar.innerHTML = h;
+}
+
+function openPresetMo(){
+  // 現在のフィルター内容を表示
+  const desc = activeFilters.length===0 ? 'フィルターなし' :
+    activeFilters.map(f=>{
+      const ft = FILTER_TYPES.find(t=>t.key===f.key);
+      return (ft?ft.label:f.key) + '：' + getFLabel(f);
+    }).join('　／　');
+  document.getElementById('preset-current-desc').textContent = desc;
+  document.getElementById('preset-name-inp').value = '';
+
+  // プリセット一覧
+  const wrap = document.getElementById('preset-list-wrap');
+  if(filterPresets.length===0){
+    wrap.innerHTML = '<div style="font-size:12px;color:#9C907E;text-align:center;padding:8px 0;">保存済みプリセットはありません</div>';
+  } else {
+    wrap.innerHTML = '<div style="font-size:11px;font-weight:600;color:#6B6058;margin-bottom:5px;">保存済みプリセット</div><div class="preset-list">'+
+      filterPresets.map(p=>`
+        <div class="preset-item" id="pi-${p.id}">
+          <div style="flex:1;">
+            <div class="preset-name" id="pn-${p.id}">${p.name}</div>
+            <div class="preset-desc">${p.filters.length===0?'フィルターなし':p.filters.map(f=>{const ft=FILTER_TYPES.find(t=>t.key===f.key);return(ft?ft.label:f.key)+':'+getFLabel(f);}).join(' / ')}</div>
+          </div>
+          <button class="preset-edit-btn" onclick="editPresetName('${p.id}')">✏️</button>
+          <button class="preset-del-btn" onclick="deletePreset('${p.id}')">🗑️</button>
+        </div>`).join('')+
+    '</div>';
+  }
+
+  document.getElementById('preset-mo').classList.add('open');
+}
+
+function closePresetMo(){
+  document.getElementById('preset-mo').classList.remove('open');
+}
+
+function savePreset(){
+  const name = (document.getElementById('preset-name-inp').value||'').trim();
+  if(!name){ document.getElementById('preset-name-inp').style.borderColor='#A32D2D'; return; }
+  document.getElementById('preset-name-inp').style.borderColor='';
+  const id = 'p_'+Date.now();
+  filterPresets.push({
+    id, name,
+    filters: JSON.parse(JSON.stringify(activeFilters)),
+    sortMode, phoneFilter
+  });
+  savePresetsToDB();
+  activePresetId = id;
+  renderPresetBar();
+  closePresetMo();
+  flash('📌 「'+name+'」を保存しました');
+}
+
+function applyPreset(id){
+  const p = filterPresets.find(x=>x.id===id);
+  if(!p) return;
+  activePresetId = id;
+  activeFilters = JSON.parse(JSON.stringify(p.filters));
+  sortMode = p.sortMode || 'phone-first';
+  phoneFilter = p.phoneFilter || 'all';
+  // UIに反映
+  document.querySelectorAll('.sc').forEach(b=>b.classList.remove('active'));
+  const sm = document.getElementById('sc-'+sortMode);
+  if(sm) sm.classList.add('active');
+  document.querySelectorAll('.ph-btn').forEach(b=>b.classList.remove('active'));
+  const phBtns = document.querySelectorAll('.ph-btn');
+  const phMap = {'all':0,'has':1,'none':2};
+  if(phBtns[phMap[phoneFilter]]) phBtns[phMap[phoneFilter]].classList.add('active');
+  renderFTB();
+  applyF();
+  renderPresetBar();
+  flash('📌 「'+p.name+'」を適用しました');
+}
+
+function deletePreset(id){
+  if(!confirm('このプリセットを削除しますか？'))return;
+  filterPresets = filterPresets.filter(p=>p.id!==id);
+  if(activePresetId===id) activePresetId=null;
+  savePresetsToDB();
+  renderPresetBar();
+  openPresetMo();
+}
+
+function editPresetName(id){
+  const p = filterPresets.find(x=>x.id===id);
+  if(!p) return;
+  const nameEl = document.getElementById('pn-'+id);
+  if(!nameEl) return;
+  const inp = document.createElement('input');
+  inp.className = 'preset-inp';
+  inp.style.marginBottom='0';
+  inp.style.padding='2px 6px';
+  inp.style.fontSize='12px';
+  inp.value = p.name;
+  nameEl.replaceWith(inp);
+  inp.focus();
+  inp.onblur = ()=>{
+    const newName = inp.value.trim();
+    if(newName) p.name = newName;
+    savePresetsToDB();
+    renderPresetBar();
+    openPresetMo();
+  };
+  inp.onkeydown = (e)=>{ if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){ inp.value=p.name; inp.blur(); } };
+}
+
 async function init(){
   renderHead();renderFTB();
   await loadFromDB();
   renderUS();
-  updPhCnts();setSM('phone-first');updateKPI();document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(selId!==null){if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();navCo(1);}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();navCo(-1);}else if(e.key==='Escape'){if(isEditMode)cancelEdit();else if(document.getElementById('ql').classList.contains('show'))closeQL();else closeDet();}}});}
+  updPhCnts();setSM('phone-first');updateKPI();
+  await loadPresetsFromDB();document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(selId!==null){if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();navCo(1);}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();navCo(-1);}else if(e.key==='Escape'){if(isEditMode)cancelEdit();else if(document.getElementById('ql').classList.contains('show'))closeQL();else closeDet();}}});}
 function navCo(dir){if(selId===null||!filtered.length)return;const cur=filtered.findIndex(c=>c.id===selId);const next=cur+dir;if(next<0||next>=filtered.length)return;selCo(filtered[next].id);setTimeout(()=>{const r=document.querySelectorAll('#lbody tr.sel');if(r[0])r[0].scrollIntoView({block:'nearest'});},50);}
 function navPos(){if(selId===null)return;const i=filtered.findIndex(c=>c.id===selId);document.getElementById('nav-pos').textContent=(i+1)+'/'+filtered.length;}
 function toggleQL(){const el=document.getElementById('ql');if(el.classList.contains('show')){closeQL();return;}qlResult=null;document.getElementById('ql-grid').innerHTML=RESULTS.map(r=>`<button class="ql-btn r-${r}" onclick="selQL('${r}',this)">${r}</button>`).join('');document.getElementById('ql-memo').value='';el.classList.add('show');document.getElementById('ql-memo').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveQL();}});}
@@ -876,7 +1112,17 @@ function clrFilters(){activeFilters=[];renderFTB();applyF();}
 function getFLabel(f){const v=f.values;if(f.key==='phone')return v.val==='has'?'番号あり':v.val==='none'?'番号なし':'';if(f.key==='status')return v.statuses&&v.statuses.length>0?v.statuses.join('・'):'';if(f.key==='pref')return v.prefs&&v.prefs.length>0?(v.prefs.length<=2?v.prefs.join('・'):v.prefs.length+'都道府県'):'';if(f.key==='industry'||f.key==='empRange'||f.key==='keyman')return v.val||'';if(f.key==='nextDate')return(v.from||v.to)?(v.from||'')+'〜'+(v.to||''):'';return'';}
 function renderFTB(){const bar=document.getElementById('ftb');let h='';activeFilters.forEach(f=>{const ft=FILTER_TYPES.find(t=>t.key===f.key);const lbl=getFLabel(f);const hv=lbl!=='';h+=`<div class="ftag${hv?' hv':''}" onclick="openFMO_val('${f.key}',true)"><span>${ft?ft.label:f.key}${hv?'：<strong>'+lbl+'</strong>':''}</span><button class="ftag-x" onclick="event.stopPropagation();rmFilter('${f.key}')">×</button></div>`;});h+=`<button class="fadd" onclick="openFMO_type()">＋ フィルター</button>`;if(activeFilters.some(f=>getFLabel(f)!==''))h+=`<button class="fclr" onclick="clrFilters()">クリア</button>`;bar.innerHTML=h;}
 let colDS2=-1;
-function renderHead(){const vis=colCfg.filter(c=>c.visible);document.getElementById('lhd').innerHTML='<tr>'+vis.map((c,vi)=>`<th draggable="true" ondragstart="cDS(event,${vi})" ondragover="cDO(event,${vi})" ondrop="cDP(event,${vi})" ondragend="cDE()" ondragleave="cDL(this)">${c.label}</th>`).join('')+'</tr>';}
+function renderHead(){
+  const vis=colCfg.filter(c=>c.visible);
+  const sortable=['name','pref','status','nextDate','phone','kmCount'];
+  document.getElementById('lhd').innerHTML='<tr>'+vis.map((c,vi)=>{
+    const isSortable=sortable.includes(c.key);
+    const isActive=colSortKey===c.key;
+    const icon=isActive?(colSortDir==='asc'?' ▲':' ▼'):(isSortable?' ⇅':'');
+    const style=isActive?'color:var(--od);':'';
+    return `<th draggable="true" ondragstart="cDS(event,${vi})" ondragover="cDO(event,${vi})" ondrop="cDP(event,${vi})" ondragend="cDE()" ondragleave="cDL(this)" ${isSortable?`onclick="toggleColSort('${c.key}')" style="cursor:pointer;user-select:none;${style}"`:''}>${c.label}<span style="font-size:9px;opacity:0.7;">${icon}</span></th>`;
+  }).join('')+'</tr>';
+}
 function cDS(e,i){colDS2=i;e.currentTarget.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
 function cDO(e,i){e.preventDefault();const ths=document.querySelectorAll('#lhd th');ths.forEach((t,j)=>t.classList.toggle('drag-over',j===i&&i!==colDS2));}
 function cDL(el){el.classList.remove('drag-over');}
@@ -897,8 +1143,53 @@ function addP(){const n=(document.getElementById('pf-n').value||'').trim();if(!n
 function delP(pid){if(!confirm('削除しますか？'))return;persons[selId]=persons[selId].filter(p=>p.id!==pid);const c=companies.find(x=>x.id===selId);if(c.keymanId===pid){const ps=persons[selId];c.keymanId=ps.length>0?ps[0].id:-1;}renderPersonsSection();refreshTop();renderInfoSection();renderList();savePersonsToDB(selId);}
 function openKM(){const ps=persons[selId]||[],c=companies.find(x=>x.id===selId);document.getElementById('kml2').innerHTML=ps.map(p=>`<div style="padding:7px 10px;border-radius:6px;border:1px solid #C8BFAA;background:#FAF8F3;cursor:pointer;display:flex;align-items:center;gap:7px;margin-bottom:3px;" onclick="setKM(${p.id})"><div><div style="font-size:12px;font-weight:600;">${p.name}</div><div style="font-size:11px;color:#9C907E;">${p.title||'役職未設定'}</div></div>${p.id===c.keymanId?'<span class="kmb">現在のKM</span>':''}</div>`).join('');document.getElementById('km-mo').classList.add('open');}
 function setKM(pid){companies.find(x=>x.id===selId).keymanId=pid;document.getElementById('km-mo').classList.remove('open');renderPersonsSection();refreshTop();}
-function renderLogsSection(){if(selId===null)return;const logs=callLogs[selId]||[];const ags=[...new Set(logs.map(l=>l.userId))].map(uid=>isUsers.find(u=>u.id===uid)).filter(Boolean);document.getElementById('log-count').textContent=logs.length+'件';const wrap=document.getElementById('logs-wrap');const filterHtml=`<div class="log-fr"><button class="lfb${logAgF==='all'?' active':''}" onclick="setLF('all')">全員</button>${ags.map(u=>`<button class="lfb${logAgF===u.id?' active':''}" onclick="setLF(${u.id})" style="${logAgF===u.id?'background:'+u.color+';color:#fff;border-color:'+u.color+';':''}">${u.name}</button>`).join('')}</div>`;const vis=logAgF==='all'?logs:logs.filter(l=>l.userId===logAgF);const logsHtml=!logs.length?`<div class="no-logs">架電履歴はまだありません</div>`:!vis.length?`<div class="no-logs">該当なし</div>`:vis.slice().reverse().map(l=>{const u=isUsers.find(x=>x.id===l.userId);return`<div class="log-item"><div class="log-res r-${l.result}">${l.result}</div><div class="log-ag">${u?`<span class="lad" style="background:${u.color};"></span>${u.name}`:'—'}</div><div class="log-time">${l.time}</div>${l.memo?`<div class="log-memo-txt">${l.memo}</div>`:''}</div>`;}).join('');wrap.innerHTML=filterHtml+logsHtml;}
+function renderLogsSection(){if(selId===null)return;const logs=callLogs[selId]||[];const ags=[...new Set(logs.map(l=>l.userId))].map(uid=>isUsers.find(u=>u.id===uid)).filter(Boolean);document.getElementById('log-count').textContent=logs.length+'件';const wrap=document.getElementById('logs-wrap');const filterHtml=`<div class="log-fr"><button class="lfb${logAgF==='all'?' active':''}" onclick="setLF('all')">全員</button>${ags.map(u=>`<button class="lfb${logAgF===u.id?' active':''}" onclick="setLF(${u.id})" style="${logAgF===u.id?'background:'+u.color+';color:#fff;border-color:'+u.color+';':''}">${u.name}</button>`).join('')}</div>`;const vis=logAgF==='all'?logs:logs.filter(l=>l.userId===logAgF);const logsHtml=!logs.length?`<div class="no-logs">架電履歴はまだありません</div>`:!vis.length?`<div class="no-logs">該当なし</div>`:vis.slice().reverse().map((l,ri)=>{const u=isUsers.find(x=>x.id===l.userId);const idx=logs.indexOf(l);return`<div class="log-item" id="log-item-${idx}"><div class="log-res r-${l.result}">${l.result}</div><div class="log-ag">${u?`<span class="lad" style="background:${u.color};"></span>${u.name}`:'—'}</div><div class="log-time">${l.time}</div><div style="display:flex;gap:3px;margin-left:auto;"><button class="log-edit-btn" onclick="openLogEdit(${selId},${idx})">✏️ 編集</button><button class="log-del-btn" onclick="deleteLog(${selId},${idx})">🗑️</button></div>${l.memo?`<div class="log-memo-txt">${l.memo}</div>`:''}</div>`;}).join('');wrap.innerHTML=filterHtml+logsHtml;}
 function setLF(v){logAgF=v;renderLogsSection();}
+
+function deleteLog(cid,idx){
+  if(!confirm('この架電履歴を削除しますか？'))return;
+  const log=callLogs[cid][idx];
+  deleteLogFromDB(log._uuid);
+  callLogs[cid].splice(idx,1);
+  renderLogsSection();updateKPI();flash('🗑️ 削除しました');
+}
+
+let editingLogIdx=null;
+function openLogEdit(cid,idx){
+  if(editingLogIdx!==null) closeLogEdit();
+  editingLogIdx=idx;
+  const log=callLogs[cid][idx];
+  const item=document.getElementById('log-item-'+idx);
+  if(!item)return;
+  const resOpts=RESULTS.map(r=>`<option value="${r}"${log.result===r?' selected':''}>${r}</option>`).join('');
+  const form=document.createElement('div');
+  form.className='log-edit-form';
+  form.innerHTML=`
+    <select class="log-edit-sel" id="led-result">${resOpts}</select>
+    <input class="log-edit-inp" id="led-memo" type="text" value="${log.memo||''}" placeholder="メモ">
+    <div class="log-edit-acts">
+      <button class="log-edit-cancel" onclick="closeLogEdit()">キャンセル</button>
+      <button class="log-edit-save" onclick="saveLogEdit(${cid},${idx})">保存</button>
+    </div>`;
+  item.appendChild(form);
+}
+
+function closeLogEdit(){
+  editingLogIdx=null;
+  const f=document.querySelector('.log-edit-form');
+  if(f)f.remove();
+}
+
+function saveLogEdit(cid,idx){
+  const log=callLogs[cid][idx];
+  const newResult=document.getElementById('led-result').value;
+  const newMemo=document.getElementById('led-memo').value;
+  log.result=newResult;
+  log.memo=newMemo;
+  updateLogInDB(log);
+  closeLogEdit();
+  renderLogsSection();flash('✓ 架電履歴を更新しました');
+}
 function updateKPI(){const today=new Date().toISOString().slice(0,10);const ml=Object.values(callLogs).flat().filter(l=>l.userId===curUid&&l.dateStr===today);document.getElementById('kv1').textContent=ml.length;const apo=ml.filter(l=>l.result==='アポ獲得').length;document.getElementById('kv2').textContent=apo;const conn=ml.filter(l=>l.result!=='未接続').length;document.getElementById('kv3').textContent=ml.length>0?Math.round(conn/ml.length*100)+'%':'—';document.getElementById('kv4').textContent=ml.length>0?Math.round(apo/ml.length*100)+'%':'—';}
 function openImp(m){impMode=m;impWB=null;impSheet=null;impHeaders=[];impRows=[];impS(1);switchIT(m,null,true);document.getElementById('imp-mo').classList.add('open');}
 function closeImp(){document.getElementById('imp-mo').classList.remove('open');}
